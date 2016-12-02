@@ -49,10 +49,10 @@ The django app need a secret key, for that you need get a new key (http://www.mi
 
 You need the following information:
 - `<SERVER_PUBLIC_IP>`: used in apache configuration file
-- `<DATABASE_NAME>: name of the new database
-- `<POSGRES_USER>: name of the new postgres user
-- `<POSTGRES_USER_PASS>: pasword of the postgres user 
-- `<DUMP_DB_PATH>: a dump of the transapp database
+- `<DATABASE_NAME>`: name of the new database
+- `<POSGRES_USER>`: name of the new postgres user
+- `<POSTGRES_USER_PASS>`: pasword of the postgres user 
+- `<DUMP_DB_PATH>`: a dump of the transapp database
 
 
 It is highly recommended to read the script before running it and ALSO EXECUTTE IT BY ONE PIECE AT A TIME!. Modify the configuration section on `installScript.sh` to select which steps do you want to run. The recommended way is to deactivate all steps and run then separately. 
