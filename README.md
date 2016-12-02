@@ -63,12 +63,4 @@ It is highly recommended to read the script before running it and ALSO EXECUTTE 
 # run with sudo
 $ sudo su
 $ bash installScript.sh <SERVER_PUBLIC_IP> <DATABASE_NAME> <POSTGRES_USER> <POSTGRES_USER_PASS> <DUMP_DB_PATH>
-```
-
-sudo bash installScript.sh localhost prueba inspector 1ghost2inspector /home/prueba/ghostinspector03_11_2016.sql
-
-====================================================
-MANUAL INSTALLATION
-====================================================
-
-
+``
