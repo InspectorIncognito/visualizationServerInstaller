@@ -64,3 +64,8 @@ It is highly recommended to read the script before running it and ALSO EXECUTTE 
 $ sudo su
 $ bash installScript.sh <SERVER_PUBLIC_IP> <DATABASE_NAME> <POSTGRES_USER> <POSTGRES_USER_PASS> <DUMP_DB_PATH>
 ``
+FInally, after ends the script you need add the ip direction to the django setting (in ALLOWED_HOSTS) and reestar the apache server.
+
+```(bash)
+$ sudo service apache2 restart
+```
