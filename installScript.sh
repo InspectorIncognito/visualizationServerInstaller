@@ -38,7 +38,7 @@ DUMP=$5
 clone_project=false
 install_packages=false
 postgresql_configuration=false
-project_configuration=false
+project_configuration=true
 apache_configuration=true
 
 USER_NAME="visualization"
@@ -102,7 +102,6 @@ fi
 
 if $install_packages; then
     cd $PROJECT_DEST/visualization
-    pwd
     # Install all necesary things
     # use eog to view image through ssh by enabling the -X flag
     # Ejample: ssh -X .....
@@ -148,6 +147,7 @@ if $postgresql_configuration; then
   # get the version of psql
   psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
   # change config of psql
+  cd $initialPATH
   sudo python replaceConfigPSQL.py $psqlVersion
   sudo service postgresql restart
   # postgres user has to be owner of the file and folder that contain the file
@@ -216,7 +216,7 @@ if $project_configuration; then
 
   # install all dependencies of python to the project
   cd $PROJECT_DEST/visualization
-
+  echo "--------------------------------------------------------------------------------"
   # uptade the model of the database
   python manage.py migrate
   python manage.py collectstatic
