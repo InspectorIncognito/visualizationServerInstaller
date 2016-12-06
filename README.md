@@ -32,7 +32,7 @@ DEPLOYMENT
 
 ```(bash)
 # Run on the target machine
-$ git clone https://github.com/InspectorIncognito/serverInstaller.git
+$ git clone https://github.com/InspectorIncognito/visualizationServerInstaller.git
 
 # or download anywhere and then copy the files to the server:
 # (e.g. if you want to bring up an AWS EC2 with ubuntu OS)
