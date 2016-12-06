@@ -15,7 +15,7 @@ This repository mantains the code for deploying the TranSappVisualization server
 PREREQUISITES
 ====================================================
 
-## Linux Machine with Ubuntu 14.04
+## Linux Machine with Ubuntu 16.04
 
 This has been tested on Ubuntu 16.04 machines.
 
