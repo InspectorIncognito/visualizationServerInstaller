@@ -194,7 +194,7 @@ if $project_configuration; then
   mkdir $PROJECT_DEST/visualization/visualization/keys
   SECRET_KEY_FILE=$PROJECT_DEST/visualization/visualization/keys/secret_key.txt
   touch $SECRET_KEY_FILE
-  echo "#%uzzxb$0*(vo8_!l^tnz6gldu%ikpu3q_y&7usrlvt3vm!0(m" > $SECRET_KEY_FILE
+  echo "<INSERT_DJANGO_SECRET_KEY>" > $SECRET_KEY_FILE
  
   database_template_file=$initialPATH/template_database.py
   database_final_file=$PROJECT_DEST/visualization/visualization/database.py
