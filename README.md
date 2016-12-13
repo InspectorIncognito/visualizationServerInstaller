@@ -51,7 +51,7 @@ You need the following information:
 - `<DATABASE_NAME>`: name of the new database
 - `<POSGRES_USER>`: name of the new postgres user
 - `<POSTGRES_USER_PASS>`: postgres user's pasword
-- `<DUMP_DB_PATH>`: full path to a DB dump SQL file, obtained from the TranSapp App database
+- `<DUMP_DB_PATH>`: full path to a DB dump (.sql file), obtained from the TranSapp App database
 
 
 It is highly recommended to read the script before running it and ALSO EXECUTTE IT BY ONE PIECE AT A TIME!. Modify the configuration section on `installScript.sh` to select which steps do you want to run. The recommended way is to deactivate all steps and run them separately. 
@@ -59,10 +59,11 @@ It is highly recommended to read the script before running it and ALSO EXECUTTE 
 
 ### RUN
 
+Go to the installation folder and execute the next command line.
+
 ```bash
 # run with sudo
-$ sudo su
-$ bash installScript.sh <SERVER_PUBLIC_IP> <DATABASE_NAME> <POSTGRES_USER> <POSTGRES_USER_PASS> <DUMP_DB_PATH>
+$ sudo bash installScript.sh <SERVER_PUBLIC_IP> <DATABASE_NAME> <POSTGRES_USER> <POSTGRES_USER_PASS> <DUMP_DB_PATH>
 ```
 
 When the script ends, you will need to append this machine IP address the `ALLOWED_HOSTS` django variable on the `settings.py` file.
