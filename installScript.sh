@@ -103,10 +103,6 @@ fi
 if $install_packages; then
     cd $PROJECT_DEST/visualization
     # Install all necesary things
-    # use eog to view image through ssh by enabling the -X flag
-    # Ejample: ssh -X .....
-    # then run eog <image>
-    # and wait 
     sudo apt-get update
     # install python and pip
     sudo apt-get --yes install python-pip python-dev libpq-dev
