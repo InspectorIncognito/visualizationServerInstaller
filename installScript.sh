@@ -35,9 +35,9 @@ DUMP=$5
 # CONFIGURATION
 #####################################################################
 
-clone_project=false
-install_packages=false
-postgresql_configuration=false
+clone_project=true
+install_packages=true
+postgresql_configuration=true
 project_configuration=true
 apache_configuration=true
 
@@ -89,7 +89,6 @@ if $clone_project; then
   echo ""
 
   git clone https://github.com/InspectorIncognito/visualization.git
-  git checkout develop #eliminar con version definitiva
   cd visualization 
   git submodule init
   git submodule update
