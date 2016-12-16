@@ -72,3 +72,9 @@ Finally, restart the apache server:
 ```bash
 $ sudo service apache2 restart
 ```
+When you need to start the jobs, go to the visualization app  folder and run the next command
+
+```bash
+$ sudo -u root python manage.py crontab add
+```
+
