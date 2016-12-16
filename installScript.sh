@@ -168,6 +168,7 @@ if $postgresql_configuration; then
   sudo chown "${current_owner}" "$postgres_final_file"
   sudo chown "${current_owner}" "$INSTALLER_FOLDER"
   # load dump
+  sed -i -e 's/TO inspector;/TO "$POSTGRES_USER";/g' "$DUMP" 
   sudo -u postgres psql "$DATABASE_NAME" < "$DUMP"
 
   echo ----
