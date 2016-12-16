@@ -54,18 +54,18 @@ The installation process requires a database dump from the TranSapp server, only
 ```bash
 ## ON TranSapp server
 # perform dump
-sudo -u postgres pg_dump <database_name> --table='*ndroid*equests_*' > dump.sql
+sudo -u postgres pg_dump <database_name> --table='"AndroidRequests_"*' > dump.sql
 
 # compress 
 $ tar -zcvf dump.sql.tar.gz dump.sql
 
-## ON TranSapp Visualization server
 # send using the previous key
-$ scp dump.tar.gz <user>@<ip>:destination_folder
+$ scp -i /root/.ssh/id_rsa  dump.sql.tar.gz <user>@<ip>:<destination_folder>
 
+## ON TranSapp Visualization server
 # uncompress
-cd <path>
-tar -zxvf dump.tar.gz
+cd <destination_folder>
+tar -zxvf dump.sql.tar.gz
 ```
 
 
