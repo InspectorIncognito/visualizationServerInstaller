@@ -34,7 +34,17 @@ First, you need to generate keys for your root user:
 $ ssh-keygen -t rsa -N "" -f "/root/.ssh/id_rsa"
 ```
 
-Then, copy and paste the generated `.pub` key (`/root/.ssh/id_rsa`) for root into the `/home/<user>/.ssh/authorized_keys`on the Visualization server, where `<user>` **relates to the user created while installing. SO you have two options, create the user account yourself or wait for the script to fail after the user generation process.**
+Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the Visualization server, where `<user>` **relates to the user created while installing. SO you have two options, create the user account yourself or wait for the script to fail after the user generation process.**
+
+Then, try to perform a ssh connection to the Visualization server, using the generated private key. Just accept when prompted whether to accept the fingerprint on this first connection.
+```bash
+sudo -u root ssh -i /root/.ssh/id_rsa <user>@<ip>
+```
+
+Note, you may need to install the `openssh-server` debian package on both machines.
+```bash
+$ sudo apt-get install openssh-server
+```
 
 
 ## Database dump file
