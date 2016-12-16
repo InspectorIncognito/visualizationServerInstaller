@@ -28,6 +28,13 @@ The installation script requires sudo access.
 Account Creation (TranSappViz)
 ====================================================
 
+TODO: Create the "visualization" user account. Just make sure:
+
+- this user does have a password
+- a home: `/home/visualization`
+- recursive permissions on its home: `sudo chown -R visualization:visualization /home/visualization`
+- and also a `/home/visualization/.bashrc` file, to ease the ssh sessions. 
+
 ====================================================
 Passwordless SSH Authentication (TranSapp)
 ====================================================
@@ -122,6 +129,8 @@ The visualization server requires the `admins.json`, `email_config.json` and `an
 ## Running the installer
 
 Go to the installation folder and execute the next command line.
+
+**WARNING: PLEASE, do not call this script with like `./installScript.sh`**.
 
 ```bash
 # run with sudo
