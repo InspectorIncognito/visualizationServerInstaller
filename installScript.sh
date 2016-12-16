@@ -52,14 +52,15 @@ COLOR_NC='\033[0m'
 # CONFIGURATION
 #####################################################################
 
-clone_project=true
-install_packages=true
-postgresql_configuration=true
-project_configuration=true
-apache_configuration=true
+clone_project=false
+install_packages=false
+postgresql_configuration=false
+project_configuration=false
+apache_configuration=false
 
 USER_NAME="visualization"
 PROJECT_DEST=/home/"$USER_NAME"/Documents
+
 
 
 #####################################################################
@@ -98,17 +99,18 @@ if $clone_project; then
   echo "----"
   echo ""
 
-  DO_CLONE=false
+  DO_CLONE=true
   if [ -d visualization ]; then
     echo ""
     echo "The InspectorIncognito/visualization.git repository already exists."
-    read -p "Do you want to remove it and clone it again? " -n 1 -r
+    read -p "Do you want to remove it and clone it again? [Y/n]: " -n 1 -r
     echo    # (optional) move to a new line
+    DO_CLONE=false
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
       echo "Removing repository 'visualization' at: $(pwd)/visualization"
       rm -rf visualization
-      DO_CLONE=true         
+      DO_CLONE=true
     fi
   fi
 
@@ -128,12 +130,11 @@ fi
 if $install_packages; then
     PREREQUISITES_SCRIPT="$PROJECT_DEST"/visualization/prerequisites.sh
     if [ -e "$PREREQUISITES_SCRIPT" ]; then
-      bash prerequisites.sh
+      bash "$PREREQUISITES_SCRIPT"
     else
       printf "I ${COLOR_RED}Prerequisites Installer script not found: $PREREQUISITES_SCRIPT${COLOR_NC}\n"
     fi
 fi
-
 
 #####################################################################
 # POSTGRESQL
