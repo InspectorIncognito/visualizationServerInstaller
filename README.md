@@ -92,7 +92,7 @@ The django app needs a secret key, you can [generate a new one](http://www.miniw
 ## Run the installer
 
 You need the following information:
-- `<SERVER_PUBLIC_IP>`: used in apache configuration file
+- `<SERVER_PUBLIC_IP>`: This server public IP, used in apache configuration file
 - `<DATABASE_NAME>`: name of the new database
 - `<POSGRES_USER>`: name of the new postgres user
 - `<POSTGRES_USER_PASS>`: postgres user's pasword
