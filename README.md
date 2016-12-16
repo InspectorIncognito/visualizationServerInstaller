@@ -66,12 +66,12 @@ Prepare a Database Dump (TranSapp)
 
 ## Database dump file
 
-The installation process requires a database dump from the TranSapp server, only with the AndroidRequests models:
+The installation process requires a complete database dump from the TranSapp server, only with the AndroidRequests models:
 
 ```bash
 ## ON TranSapp server
 # perform dump
-sudo -u postgres pg_dump <database_name> --table='"AndroidRequests_"*' > dump.sql
+sudo -u postgres pg_dump <database_name> > dump.sql
 
 # compress 
 $ tar -zcvf dump.sql.tar.gz dump.sql

@@ -154,17 +154,17 @@ if $postgresql_configuration; then
   sudo service postgresql restart
   # postgres user has to be owner of the file and folder that contain the file
   current_owner=$(stat -c '%U' .)
-  sudo chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
-  sudo chown postgres "$INSTALLER_FOLDER"
   # create user and database
   postgres_template_file="$INSTALLER_FOLDER"/template_postgresqlConfig.sql
   postgres_final_file="$INSTALLER_FOLDER"/postgresqlConfig.sql
   # copy the template
   cp "$postgres_template_file" "$postgres_final_file"
+  sudo chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
+  sudo chown postgres "$INSTALLER_FOLDER"
   sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$postgres_final_file"
   sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$postgres_final_file"
   sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
-  sudo -u postgres -i psql -f "$postgres_final_file"
+  sudo -u postgres psql -f "$postgres_final_file"
   sudo chown "${current_owner}" "$postgres_final_file"
   sudo chown "${current_owner}" "$INSTALLER_FOLDER"
   # load dump
