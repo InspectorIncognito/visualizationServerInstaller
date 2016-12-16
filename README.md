@@ -24,6 +24,14 @@ This has been tested on Ubuntu 16.04 machines.
 The installation script requires sudo access.
 
 
+====================================================
+Account Creation (TranSappViz)
+====================================================
+
+====================================================
+Passwordless SSH Authentication (TranSapp)
+====================================================
+
 ## Required Keys
 
 To be able to install this server, you will require to have ssh access from the TranSapp server.
@@ -45,7 +53,9 @@ Note, you may need to install the `openssh-server` debian package on both machin
 ```bash
 $ sudo apt-get install openssh-server
 ```
-
+====================================================
+Prepare a Database Dump (TranSapp)
+====================================================
 
 ## Database dump file
 
@@ -73,7 +83,7 @@ tar -zxvf dump.sql.tar.gz
 DEPLOYMENT
 ====================================================
 
-## Get the installer
+## Clone the the installer
 
 ```bash
 # clone directly on the target machine
@@ -84,12 +94,12 @@ $ git clone https://github.com/InspectorIncognito/visualizationServerInstaller.g
 $ scp -i <private_key> -r install <server-user>@<server-host>:/home/<server-user>
 ```
 
-## Get Django key
+## Modify it with the missing Django key
 
 The django app needs a secret key, you can [generate a new one](http://www.miniwebtool.com/django-secret-key-generator/) and manually replace the `<INSERT_DJANGO_SECRET_KEY>` script variable on `installScript.sh`.
 
 
-## Run the installer
+## Understanding the installer
 
 You need the following information:
 - `<SERVER_PUBLIC_IP>`: This server public IP, used in apache configuration file
@@ -102,7 +112,14 @@ You need the following information:
 It is highly recommended to read the script before running it and ALSO EXECUTTE IT BY ONE PIECE AT A TIME!. Modify the configuration section on `installScript.sh` to select which steps do you want to run. The recommended way is to deactivate all steps and run them separately. 
 
 
-### RUN
+## Known Problems
+
+### Missing files when calling manage.py
+
+The visualization server requires the `admins.json`, `email_config.json` and `android_requests_backups.py` files to be stored on the `visualization/keys/` folder. You can get the last from a template file on the AndroidRequestsBackups app, which will be downloaded during the installation, just make sure you copied the correct template. The others can be retrieved from the (TranSapp) server.
+
+
+## Running the installer
 
 Go to the installation folder and execute the next command line.
 
@@ -111,7 +128,9 @@ Go to the installation folder and execute the next command line.
 $ sudo bash installScript.sh <SERVER_PUBLIC_IP> <DATABASE_NAME> <POSTGRES_USER> <POSTGRES_USER_PASS> <DUMP_DB_PATH>
 ```
 
-When the script ends, you will need to append this machine IP address the `ALLOWED_HOSTS` django variable on the `settings.py` file.
+When the script ends, you will need to append this machine IP address the `ALLOWED_HOSTS` django variable on the `settings.py` server file.
+
+## Setting up apache
 
 Finally, restart the apache server:
 ```bash
@@ -119,5 +138,9 @@ $ sudo service apache2 restart
 ```
 
 
-Then, setup the jobs as described on the [AndroidRequestsBackups app](https://github.com/InspectorIncognito/AndroidRequestsBackups) .
+====================================================
+The Last bit of work
+====================================================
+
+You are almost ready on your journey. Just setup the jobs as described on the [AndroidRequestsBackups app](https://github.com/InspectorIncognito/AndroidRequestsBackups) .
 
