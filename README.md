@@ -24,6 +24,41 @@ This has been tested on Ubuntu 16.04 machines.
 The installation script requires sudo access.
 
 
+## Required Keys
+
+To be able to install this server, you will require to have ssh access from the TranSapp server.
+
+First, you need to generate keys for your root user:
+```bash
+# rsa encription, no passphrase, filename
+$ ssh-keygen -t rsa -N "" -f "/root/.ssh/id_rsa"
+```
+
+Then, copy and paste the generated `.pub` key (`/root/.ssh/id_rsa`) for root into the `/home/<user>/.ssh/authorized_keys`on the Visualization server, where `<user>` **relates to the user created while installing. SO you have two options, create the user account yourself or wait for the script to fail after the user generation process.**
+
+
+## Database dump file
+
+The installation process requires a database dump from the TranSapp server, only with the AndroidRequests models:
+
+```bash
+## ON TranSapp server
+# perform dump
+sudo -u postgres pg_dump <database_name> --table='*ndroid*equests_*' > dump.sql
+
+# compress 
+$ tar -zcvf dump.sql.tar.gz dump.sql
+
+## ON TranSapp Visualization server
+# send using the previous key
+$ scp dump.tar.gz <user>@<ip>:destination_folder
+
+# uncompress
+cd <path>
+tar -zxvf dump.tar.gz
+```
+
+
 ====================================================
 DEPLOYMENT
 ====================================================
@@ -72,9 +107,7 @@ Finally, restart the apache server:
 ```bash
 $ sudo service apache2 restart
 ```
-When you need to start the jobs, go to the visualization app  folder and run the next command
 
-```bash
-$ sudo -u root python manage.py crontab add
-```
+
+Then, setup the jobs as described on the [AndroidRequestsBackups app](https://github.com/InspectorIncognito/AndroidRequestsBackups) .
 
