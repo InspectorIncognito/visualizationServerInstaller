@@ -231,8 +231,8 @@ if $project_configuration; then
   sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
-  python manage.py migrate
-  python manage.py collectstatic
+  python "$PROJECT_DEST"/manage.py migrate
+  python "$PROJECT_DEST"/manage.py collectstatic
 
   # add the cron task data
   #python manage.py crontab add
