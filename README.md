@@ -80,7 +80,7 @@ $ scp -i /root/.ssh/id_rsa  dump.sql.tar.gz <user>@<ip>:<destination_folder>
 # perform backup and compresion of migrations  
 tar -zcvf migrations.tar.gz <path_to_project>/AndroidRequests/migrations/*.py 
 # send to TranSapp Visualization server
-scp -i /root/.ssh/id_rsa migrations.tar.gz <>@<ip>:<destination_folder>
+scp -i /root/.ssh/id_rsa migrations.tar.gz <user>@<ip>:<destination_folder>
 
 ## ON TranSapp Visualization server
 # uncompress
