@@ -23,12 +23,17 @@ if [ -z "$5" ]; then
     echo "No se especifico la ruta del dump de la base de datos"
     exit 1
 fi
-
+if [ -z "$6" ]; then
+    echo "No se especifico la ruta del backup de las migraciones"
+    exit 1
+fi
 IP_SERVER=$1
 DATABASE_NAME=$2
 POSTGRES_USER=$3
 POSTGRES_PASS=$4
 DUMP=$5
+MIGRATION=$6
+
 
 
 
@@ -220,6 +225,12 @@ if $project_configuration; then
   # install all dependencies of python to the project
   cd "$PROJECT_DEST"/visualization
   echo "--------------------------------------------------------------------------------"
+
+  LAST_MIGRATION="$(sudo -u postgres psql -d $DATABASE -c "select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"| sed '3q;d')"
+  echo $LAST_MIGRATION
+  tar -zxvf "$MIGRATION" "$PROJECT_DEST"/AndroidRequests/migrations 
+  sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/AndroidRequests/migrations/0011_auto_20161025_1616.py
+
   # uptade the model of the database
   python manage.py migrate
   python manage.py collectstatic

@@ -72,19 +72,21 @@ The installation process requires a complete database dump from the TranSapp ser
 ## ON TranSapp server
 # perform dump
 sudo -u postgres pg_dump <database_name> > dump.sql
-
 # compress 
 $ tar -zcvf dump.sql.tar.gz dump.sql
-
 # send using the previous key
 $ scp -i /root/.ssh/id_rsa  dump.sql.tar.gz <user>@<ip>:<destination_folder>
+
+# perform backup and compresion of migrations  
+tar -zcvf migrations.tar.gz <path_to_project>/AndroidRequests/migrations/*.py 
+# send to TranSapp Visualization server
+scp -i /root/.ssh/id_rsa migrations.tar.gz <>@<ip>:<destination_folder>
 
 ## ON TranSapp Visualization server
 # uncompress
 cd <destination_folder>
 tar -zxvf dump.sql.tar.gz
 ```
-
 
 ====================================================
 DEPLOYMENT
