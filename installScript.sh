@@ -4,38 +4,41 @@
 # COMMAND LINE INPUT
 #####################################################################
 if [ -z "$1" ]; then
-    echo "It was not specify server ip"
+    echo "It was not specified server ip"
     exit 1 
 fi
 if [ -z "$2" ]; then
-    echo "It was not specify database name"
+    echo "It was not specified database name"
     exit 1
 fi
 if [ -z "$3" ]; then
-    echo "It was not specify postgres user name"
+    echo "It was not specified postgres user name"
     exit 1
 fi
 if [ -z "$4" ]; then
-    echo "It was not specify postgres user password"
+    echo "It was not specified postgres user password"
     exit 1
 fi
 if [ -z "$5" ]; then
-    echo "It was not specify database dump path"
+    echo "It was not specified database dump path"
     exit 1
 fi
 if [ -z "$6" ]; then
-    echo "It was not specify tar file of TranSapp app server migrations"
+    echo "It was not specified tar file of TranSapp app server migrations"
     exit 1
 fi
+if [ -z "$7" ]; then
+    echo "It was not specified linux user name"
+    exit 1
+fi
+
 IP_SERVER=$1
 DATABASE_NAME=$2
 POSTGRES_USER=$3
 POSTGRES_PASS=$4
 DUMP=$5
 MIGRATION=$6
-
-
-
+LINUX_USER_NAME=$7
 
 #####################################################################
 # SETUP
@@ -63,9 +66,7 @@ postgresql_configuration=false
 project_configuration=false
 apache_configuration=false
 
-USER_NAME="visualization"
-PROJECT_DEST=/home/"$USER_NAME"/Documents
-
+PROJECT_DEST=/home/"$LINUX_USER_NAME"/Documents
 
 
 #####################################################################
@@ -73,12 +74,11 @@ PROJECT_DEST=/home/"$USER_NAME"/Documents
 #####################################################################
 
 # stores the current path
-if id "$USER_NAME" >/dev/null 2>&1; then
-    echo "User $USER_NAME already exists.. skipping"
+if id "$LINUX_USER_NAME" >/dev/null 2>&1; then
+    echo "User $LINUX_USER_NAME already exists.. skipping"
 else
-    echo "User $USER_NAME does not exists.. CREATING!"
-    useradd "$USER_NAME"
-    passwd "$USER_NAME"
+    echo "User $LINUX_USER_NAME does not exists.. CREATING!"
+    adduser "$LINUX_USER_NAME"
 fi
 
 #####################################################################
@@ -159,21 +159,25 @@ if $postgresql_configuration; then
   sudo service postgresql restart
   # postgres user has to be owner of the file and folder that contain the file
   current_owner=$(stat -c '%U' .)
+  
   # create user and database
   postgres_template_file="$INSTALLER_FOLDER"/template_postgresqlConfig.sql
   postgres_final_file="$INSTALLER_FOLDER"/postgresqlConfig.sql
   # copy the template
   cp "$postgres_template_file" "$postgres_final_file"
-  sudo chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
-  sudo chown postgres "$INSTALLER_FOLDER"
   sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$postgres_final_file"
   sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$postgres_final_file"
   sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
+  
+  # change owner to let postgres user exec file
+  sudo chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
+  sudo chown postgres "$INSTALLER_FOLDER"
   sudo -u postgres psql -f "$postgres_final_file"
   sudo chown "${current_owner}" "$postgres_final_file"
   sudo chown "${current_owner}" "$INSTALLER_FOLDER"
-  # load dump
-  sed -i -e 's/TO inspector;/TO '"$POSTGRES_USER"';/g' "$DUMP" 
+  
+  # replace the owner by the database user defined here and after load dump
+  sed -i -e 's/TO [a-zA-Z0-9]\+\;/TO '"$POSTGRES_USER"';/g' "$DUMP" 
   sudo -u postgres psql "$DATABASE_NAME" < "$DUMP"
 
   echo ----
@@ -221,13 +225,15 @@ if $project_configuration; then
   chmod 777 "$LOG_DIR"/file.log
 
 
-
   # install all dependencies of python to the project
   echo "--------------------------------------------------------------------------------"
 
+  # detect last migration executed in AndroidRequests app
   LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"| sed '3q;d')
-
+  
+  # move TranSapp app server migrations to TranSapp visualization server migration folder
   tar -zxvf "$MIGRATION" -C "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
+  # fixed migration dependencies
   sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
