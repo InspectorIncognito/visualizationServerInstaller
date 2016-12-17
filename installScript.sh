@@ -4,27 +4,27 @@
 # COMMAND LINE INPUT
 #####################################################################
 if [ -z "$1" ]; then
-    echo "No se especifico la ip del servidor"
+    echo "It was not specify server ip"
     exit 1 
 fi
 if [ -z "$2" ]; then
-    echo "No se especifico el nombre de la base de datos"
+    echo "It was not specify database name"
     exit 1
 fi
 if [ -z "$3" ]; then
-    echo "No se especifico el nombre de usuario de postgres"
+    echo "It was not specify postgres user name"
     exit 1
 fi
 if [ -z "$4" ]; then
-    echo "No se especifico la contraseña para el usuario de postgres"
+    echo "It was not specify postgres user password"
     exit 1
 fi
 if [ -z "$5" ]; then
-    echo "No se especifico la ruta del dump de la base de datos"
+    echo "It was not specify database dump path"
     exit 1
 fi
 if [ -z "$6" ]; then
-    echo "No se especifico la ruta del backup de las migraciones"
+    echo "It was not specify tar file of TranSapp app server migrations"
     exit 1
 fi
 IP_SERVER=$1
