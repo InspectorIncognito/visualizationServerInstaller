@@ -3,15 +3,15 @@ Overview
 ====================================================
 
 This repository mantains the code for deploying the TranSappVisualization server on a linux machine, which means:
-- Step 1: linux user creation (defaults to `"visualization"`) and prompts for his password.
-- Step 2: prerequisites installation
+- Step 1: linux user creation
+- Step 2: dependencies installation
 - Step 3: postgresql configuration
 - Step 4: clone and setup of the django app
 - Step 5: apache configuration
 
 
 ====================================================
-PREREQUISITES
+Prerequisites for visualization server
 ====================================================
 
 ## Linux Machine with Ubuntu 16.04
@@ -24,24 +24,36 @@ This has been tested on Ubuntu 16.04 machines.
 The installation script requires sudo access.
 
 
-====================================================
-Account Creation (TranSappViz)
-====================================================
+## Account Creation
 
-TODO: Create the "visualization" user account. Just make sure:
+To create a linux user run the command `adduser <user_name>`. After that you should see the next messages
 
-- this user does have a password
-- a home: `/home/visualization`
-- recursive permissions on its home: `sudo chown -R visualization:visualization /home/visualization`
-- and also a `/home/visualization/.bashrc` file, to ease the ssh sessions. 
+```
+Adding user `<user_name>' ...
+Adding new group `<user_name>' (1000) ...
+Adding new user `<user_name>' (1000) with group `visualization' ...
+Creating home directory `/home/<user_name>' ...
+Copying files from `/etc/skel' ...
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+Changing the user information for <user_name>
+Enter the new value, or press ENTER for the default
+        Full Name []:
+        Room Number []:
+        Work Phone []:
+        Home Phone []:
+        Other []:
+Is the information correct? [Y/n] Y
+```
 
 ====================================================
-Passwordless SSH Authentication (TranSapp)
+Passwordless SSH Authentication (on TranSapp app server)
 ====================================================
 
 ## Required Keys
 
-To be able to install this server, you will require to have ssh access from the TranSapp server.
+To be able to install this server, you will require to have ssh access from the TranSapp app server.
 
 First, you need to generate keys for your root user:
 ```bash
@@ -49,11 +61,18 @@ First, you need to generate keys for your root user:
 $ ssh-keygen -t rsa -N "" -f "/root/.ssh/id_rsa"
 ```
 
-Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the Visualization server, where `<user>` **relates to the user created while installing. SO you have two options, create the user account yourself or wait for the script to fail after the user generation process.**
+Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the visualization server, where `<user>` **relates to the user created while installing.** Note, if `.ssh` folder doesn't exists you can create it with this command `mkdir -m 700 .ssh`.
 
 Then, try to perform a ssh connection to the Visualization server, using the generated private key. Just accept when prompted whether to accept the fingerprint on this first connection.
 ```bash
 sudo -u root ssh -i /root/.ssh/id_rsa <user>@<ip>
+```
+You should see something like this
+```
+The authenticity of host '<ip> (<ip>)' can't be established.
+ECDSA key fingerprint is xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '<ip>' (ECDSA) to the list of known hosts.
 ```
 
 Note, you may need to install the `openssh-server` debian package on both machines.
@@ -61,31 +80,33 @@ Note, you may need to install the `openssh-server` debian package on both machin
 $ sudo apt-get install openssh-server
 ```
 ====================================================
-Prepare a Database Dump (TranSapp)
+Prepare a Database Dump (on TranSapp app server)
 ====================================================
 
 ## Database dump file
 
-The installation process requires a complete database dump from the TranSapp server, only with the AndroidRequests models:
+The installation process requires a database dump from the TranSapp server, with the `AndroidRequests` models and `django_migrations` table will be ok and migration files:
 
 ```bash
-## ON TranSapp server
+## ON TranSapp app server
 # perform dump
-sudo -u postgres pg_dump <database_name> > dump.sql
+sudo -u postgres pg_dump <database_name> --table='"AndroidRequests_"*' --table='django_migrations' > dump.sql
 # compress 
 $ tar -zcvf dump.sql.tar.gz dump.sql
-# send using the previous key
+# send using the previous generated key
 $ scp -i /root/.ssh/id_rsa  dump.sql.tar.gz <user>@<ip>:<destination_folder>
 
-# perform backup and compresion of migrations  
-tar -zcvf migrations.tar.gz -C <path_to_project>/AndroidRequests/migrations/*.py .
+# perform backup and compresion of migration files  
+tar -zcvf migrations.tar.gz -C <path_to_project>/AndroidRequests/migrations/ .
 # send to TranSapp Visualization server
 scp -i /root/.ssh/id_rsa migrations.tar.gz <user>@<ip>:<destination_folder>
 
 ## ON TranSapp Visualization server
-# uncompress
+# uncompress sql dump
 cd <destination_folder>
 tar -zxvf dump.sql.tar.gz
+
+# OBS: migrations tar file will be uncompress by installation script
 ```
 
 ====================================================
