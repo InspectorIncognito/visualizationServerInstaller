@@ -227,7 +227,7 @@ if $project_configuration; then
 
   LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"| sed '3q;d')
 
-  tar -zxvf "f$MIGRATION" "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
+  tar -zxvf "$MIGRATION" "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
   sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
