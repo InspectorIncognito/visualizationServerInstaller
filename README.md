@@ -181,6 +181,9 @@ Finally, restart the apache server:
 $ sudo service apache2 restart
 ```
 
+## Create super user
+
+TODO: specify how to access the platform
 
 ====================================================
 The Last bit of work
