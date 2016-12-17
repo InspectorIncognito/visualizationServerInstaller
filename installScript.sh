@@ -205,7 +205,7 @@ if $project_configuration; then
   echo "<INSERT_DJANGO_SECRET_KEY>" > "$SECRET_KEY_FILE"
  
   database_template_file="$INSTALLER_FOLDER"/template_database.py
-  database_final_file="$PROJECT_DEST"/visualization/visualization/database.py
+  database_final_file="$PROJECT_DEST"/visualization/visualization/keys/database.py
 
   # copy the template
 
@@ -223,12 +223,11 @@ if $project_configuration; then
 
 
   # install all dependencies of python to the project
-  cd "$PROJECT_DEST"/visualization
   echo "--------------------------------------------------------------------------------"
 
   LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"| sed '3q;d')
-  echo $LAST_MIGRATION
-  tar -zxvf "$MIGRATION" "$PROJECT_DEST"/AndroidRequests/migrations 
+
+  tar -zxvf "f$MIGRATION" "$PROJECT_DEST"/AndroidRequests/migrations 
   sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
