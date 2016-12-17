@@ -126,7 +126,7 @@ $ scp -i <private_key> -r install <server-user>@<server-host>:/home/<server-user
 
 ## Modify it with the missing Django key
 
-The django app needs a secret key, you can [generate a new one](http://www.miniwebtool.com/django-secret-key-generator/) and manually replace the `<INSERT_DJANGO_SECRET_KEY>` script variable on `installScript.sh`.
+The django app needs a secret key, you can [generate a new one](http://www.miniwebtool.com/django-secret-key-generator/) and manually replace the `<INSERT_DJANGO_SECRET_KEY>` script variable on `installScript.sh`. But, if you are lazy just run the next instruction: `sed -i 's/<INSERT_DJANGO_SECRET_KEY>/<MY_DJANGO_SECRET_KEY>/g' <path_to_project>/visualizationServerInstaller/installScript.sh`
 
 
 ## Understanding the installer
@@ -138,16 +138,27 @@ You need the following information:
 - `<POSTGRES_USER_PASS>`: postgres user's pasword
 - `<DUMP_DB_PATH>`: full path to a DB dump (.sql file), obtained from the TranSapp App database
 - `<MIGRATIONS>`: full path of the migrations .tar.gz from TranSapp App django application
+- `<LINUX_USER_NAME>`: linux user name used to choose the folder where TranSapp visualization project will be located
 
 
 It is highly recommended to read the script before running it and ALSO EXECUTTE IT BY ONE PIECE AT A TIME!. Modify the configuration section on `installScript.sh` to select which steps do you want to run. The recommended way is to deactivate all steps and run them separately. 
 
+Inside `installScript.sh` you will discover 5 steps:
+1. Clone project: clone django visualization server project
+2. install packages: install project dependencies
+3. Postgresql configuration: create database and load data to it
+4. Project configuration: 
+5. Apache_configuration
 
 ## Known Problems
 
-### Missing files when calling manage.py
+### Missing files when calling manage.py (step 4 Project configuration)
 
-The visualization server requires the `admins.json`, `email_config.json` and `android_requests_backups.py` files to be stored on the `visualization/keys/` folder. You can get the last from a template file on the AndroidRequestsBackups app, which will be downloaded during the installation, just make sure you copied the correct template. The others can be retrieved from the (TranSapp) server.
+The visualization server requires the `admins.json`, `email_config.json` and `android_requests_backups.py` files to be stored on the `visualization/keys/` folder. You can get the last from a template file on the AndroidRequestsBackups app, which will be downloaded during the installation, just make sure you copied the correct template. The others can be retrieved (a template) from the TranSapp app server [here](https://github.com/InspectorIncognito/server/tree/master/.travis).
+
+### bower 
+
+Bower manage javascript libraries used by visualization app but doesn't let you use it with sudo priviliges so it's probably you won't see a beatiful web page at the end of the process. To fix this problem you have to go `<path_to_project>` and run `bower install` with owner of directory where the project is.
 
 
 ## Running the installer
