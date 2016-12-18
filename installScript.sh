@@ -109,7 +109,7 @@ if $clone_project; then
     echo ""
     echo "The InspectorIncognito/visualization.git repository already exists."
     read -p "Do you want to remove it and clone it again? [Y/n]: " -n 1 -r
-    echo    # (optional) move to a new line
+    echo # (optional) move to a new line
     DO_CLONE=false
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
@@ -151,35 +151,53 @@ if $postgresql_configuration; then
   echo ----
   echo ----
 
-  # get the version of psql
-  psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
-  # change config of psql
-  cd "$INSTALLER_FOLDER"
-  python replaceConfigPSQL.py "$psqlVersion"
-  service postgresql restart
-  # postgres user has to be owner of the file and folder that contain the file
-  current_owner=$(stat -c '%U' .)
+  CREATE_DATABASE=true
+  DATABASE_EXISTS=sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw "$DATABASE_NAME"
+  if [ "$DATABASE_EXISTS" ]; then
+      echo ""
+      echo "The database $DATABASE_NAME already exists."
+      read -p "Do you want to remove it and create it again? [Y/n]: " -n 1 -r
+      echo # (optional) move to a new line
+      CREATE_DATABASE=false
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        echo "Removing database $DATABASE_NAME..."
+        sudo -u postgres psql -c "DROP DATABASE $DATABASE_NAME;"
+        CREATE_DATABASE=true
+      fi
+  fi
   
-  # create user and database
-  postgres_template_file="$INSTALLER_FOLDER"/template_postgresqlConfig.sql
-  postgres_final_file="$INSTALLER_FOLDER"/postgresqlConfig.sql
-  # copy the template
-  cp "$postgres_template_file" "$postgres_final_file"
-  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$postgres_final_file"
-  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$postgres_final_file"
-  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
+  if [ "$DATABASE_EXISTS" ]; then
+      # get the version of psql
+      psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
+      # change config of psql
+      cd "$INSTALLER_FOLDER"
+      python replaceConfigPSQL.py "$psqlVersion"
+      service postgresql restart
+      # postgres user has to be owner of the file and folder that contain the file
+      current_owner=$(stat -c '%U' .)
   
-  # change owner to let postgres user exec file
-  chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
-  chown postgres "$INSTALLER_FOLDER"
-  sudo -u postgres psql -f "$postgres_final_file"
-  rm "$postgres_final_file"
-  #sudo chown "${current_owner}" "$postgres_final_file"
-  #sudo chown "${current_owner}" "$INSTALLER_FOLDER"
+      # create user and database
+      postgres_template_file="$INSTALLER_FOLDER"/template_postgresqlConfig.sql
+      postgres_final_file="$INSTALLER_FOLDER"/postgresqlConfig.sql
+      # copy the template
+      cp "$postgres_template_file" "$postgres_final_file"
+      sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$postgres_final_file"
+      sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$postgres_final_file"
+      sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
   
-  # replace the owner by the database user defined here and after load dump
-  sed -i -e 's/TO [a-zA-Z0-9]\+\;/TO '"$POSTGRES_USER"';/g' "$DUMP" 
-  sudo -u postgres psql "$DATABASE_NAME" < "$DUMP"
+      # change owner to let postgres user exec file
+      chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
+      chown postgres "$INSTALLER_FOLDER"
+      sudo -u postgres psql -f "$postgres_final_file"
+      rm "$postgres_final_file"
+      #sudo chown "${current_owner}" "$postgres_final_file"
+      #sudo chown "${current_owner}" "$INSTALLER_FOLDER"
+  
+      # replace the owner by the database user defined here and after load dump
+      sed -i -e 's/TO [a-zA-Z0-9]\+\;/TO '"$POSTGRES_USER"';/g' "$DUMP" 
+      sudo -u postgres psql "$DATABASE_NAME" < "$DUMP"
+  fi
 
   echo ----
   echo ----
