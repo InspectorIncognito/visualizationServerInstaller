@@ -155,8 +155,8 @@ if $postgresql_configuration; then
   psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
   # change config of psql
   cd "$INSTALLER_FOLDER"
-  sudo python replaceConfigPSQL.py "$psqlVersion"
-  sudo service postgresql restart
+  python replaceConfigPSQL.py "$psqlVersion"
+  service postgresql restart
   # postgres user has to be owner of the file and folder that contain the file
   current_owner=$(stat -c '%U' .)
   
@@ -170,11 +170,12 @@ if $postgresql_configuration; then
   sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
   
   # change owner to let postgres user exec file
-  sudo chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
-  sudo chown postgres "$INSTALLER_FOLDER"
+  chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
+  chown postgres "$INSTALLER_FOLDER"
   sudo -u postgres psql -f "$postgres_final_file"
-  sudo chown "${current_owner}" "$postgres_final_file"
-  sudo chown "${current_owner}" "$INSTALLER_FOLDER"
+  rm "$postgres_final_file"
+  #sudo chown "${current_owner}" "$postgres_final_file"
+  #sudo chown "${current_owner}" "$INSTALLER_FOLDER"
   
   # replace the owner by the database user defined here and after load dump
   sed -i -e 's/TO [a-zA-Z0-9]\+\;/TO '"$POSTGRES_USER"';/g' "$DUMP" 
