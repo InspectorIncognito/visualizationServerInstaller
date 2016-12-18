@@ -152,7 +152,7 @@ if $postgresql_configuration; then
   echo ----
 
   CREATE_DATABASE=true
-  DATABASE_EXISTS=sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw "$DATABASE_NAME"
+  DATABASE_EXISTS=$(sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw "$DATABASE_NAME")
   if [ "$DATABASE_EXISTS" ]; then
       echo ""
       echo "The database $DATABASE_NAME already exists."
@@ -167,25 +167,26 @@ if $postgresql_configuration; then
       fi
   fi
   
-  if [ "$DATABASE_EXISTS" ]; then
+  if [ "$CREATE_DATABASE" ]; then
       # get the version of psql
       psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
       # change config of psql
       cd "$INSTALLER_FOLDER"
       python replaceConfigPSQL.py "$psqlVersion"
       service postgresql restart
-      # postgres user has to be owner of the file and folder that contain the file
-      current_owner=$(stat -c '%U' .)
   
       # create user and database
       postgres_template_file="$INSTALLER_FOLDER"/template_postgresqlConfig.sql
       postgres_final_file="$INSTALLER_FOLDER"/postgresqlConfig.sql
       # copy the template
       cp "$postgres_template_file" "$postgres_final_file"
+      # change parameters
       sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$postgres_final_file"
       sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$postgres_final_file"
       sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$postgres_final_file"
   
+      # postgres user has to be owner of the file and folder that contain the file
+      #current_owner=$(stat -c '%U' .)
       # change owner to let postgres user exec file
       chown postgres "$INSTALLER_FOLDER"/postgresqlConfig.sql
       chown postgres "$INSTALLER_FOLDER"
@@ -233,9 +234,9 @@ if $project_configuration; then
   # copy the template
 
   cp "$database_template_file" "$database_final_file"
-  sed -i -e 's/<DATABASE>/'$DATABASE_NAME'/g' "$database_final_file"
-  sed -i -e 's/<USER>/'$POSTGRES_USER'/g' "$database_final_file"
-  sed -i -e 's/<PASSWORD>/'$POSTGRES_PASS'/g' "$database_final_file"
+  sed -i -e 's/<DATABASE>/'"$DATABASE_NAME"'/g' "$database_final_file"
+  sed -i -e 's/<USER>/'"$POSTGRES_USER"'/g' "$database_final_file"
+  sed -i -e 's/<PASSWORD>/'"$POSTGRES_PASS"'/g' "$database_final_file"
 
   # create folder used by loggers if not exist
   LOG_DIR="$PROJECT_DEST"/visualization/visualization/logs
@@ -248,12 +249,13 @@ if $project_configuration; then
   echo "--------------------------------------------------------------------------------"
 
   # detect last migration executed in AndroidRequests app
-  LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"| sed '3q;d')
+  QUERY="select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"
+  LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "$QUERY"| sed '3q;d')
   
   # move TranSapp app server migrations to TranSapp visualization server migration folder
   tar -zxvf "$MIGRATION" -C "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
   # fixed migration dependencies
-  sed -i -e 's/CHANGE_ME/"$LAST_MIGRATION"/g' "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
+  sed -i -e "s/CHANGE_ME/'$LAST_MIGRATION'/g" "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
   python "$PROJECT_DEST"/visualization/manage.py migrate
