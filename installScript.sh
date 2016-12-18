@@ -89,12 +89,12 @@ if $clone_project; then
   sudo apt-get --yes install git
   echo ""
   echo --
-  echo "Directorio del servidor: "
+  echo "Server directory: "
   echo --
   echo ""
 
   # create project destination path
-  mkdir -p "$PROJECT_DEST"
+  sudo -u "$LINUX_USER_NAME" mkdir -p "$PROJECT_DEST"
   cd "$PROJECT_DEST"
 
   # clone project from git
@@ -120,10 +120,10 @@ if $clone_project; then
   fi
 
   if [ "$DO_CLONE" = "true" ]; then
-    git clone https://github.com/InspectorIncognito/visualization.git
+    sudo -u "$LINUX_USER_NAME" git clone https://github.com/InspectorIncognito/visualization.git
     cd visualization
-    git submodule init
-    git submodule update
+    sudo -u "$LINUX_USER_NAME" git submodule init
+    sudo -u "$LINUX_USER_NAME" git submodule update
   fi
 
 fi
