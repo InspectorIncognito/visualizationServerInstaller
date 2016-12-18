@@ -119,7 +119,7 @@ if $clone_project; then
     fi
   fi
 
-  if [ "$DO_CLONE" = "true" ]; then
+  if "$DO_CLONE" ; then
     git clone https://github.com/InspectorIncognito/visualization.git
     cd visualization
     git submodule init
@@ -168,7 +168,7 @@ if $postgresql_configuration; then
       fi
   fi
   
-  if [ "$CREATE_DATABASE" ]; then
+  if "$CREATE_DATABASE" ; then
       # get the version of psql
       psqlVersion=$(psql -V | egrep -o '[0-9]{1,}\.[0-9]{1,}')
       # change config of psql
