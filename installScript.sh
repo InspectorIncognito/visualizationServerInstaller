@@ -251,12 +251,12 @@ if $project_configuration; then
 
   # detect last migration executed in AndroidRequests app
   QUERY="select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"
-  LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "$QUERY"| sed '3q;d')
+  LAST_MIGRATION=$(sudo -u postgres -i psql -d "$DATABASE_NAME" -c "$QUERY"| sed '3q;d' | tr -d [:blank:])
   
   # move TranSapp app server migrations to TranSapp visualization server migration folder
   tar -zxvf "$MIGRATION" -C "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
   # fixed migration dependencies
-  sed -i -e "s/CHANGE_ME/"$LAST_MIGRATION"/g" "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
+  sed -i -e "s/CHANGE_ME/""$LAST_MIGRATION""/g" "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
   python "$PROJECT_DEST"/visualization/manage.py migrate
