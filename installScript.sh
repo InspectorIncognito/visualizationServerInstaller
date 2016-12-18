@@ -153,7 +153,7 @@ if $postgresql_configuration; then
   echo ----
 
   CREATE_DATABASE=true
-  DATABASE_EXISTS=$(sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw "$DATABASE_NAME")
+  DATABASE_EXISTS=$(sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -w "$DATABASE_NAME")
   if [ "$DATABASE_EXISTS" ]; then
       echo ""
       echo "The database $DATABASE_NAME already exists."
