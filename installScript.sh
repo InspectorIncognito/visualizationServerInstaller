@@ -120,10 +120,11 @@ if $clone_project; then
   fi
 
   if [ "$DO_CLONE" = "true" ]; then
-    sudo -u "$LINUX_USER_NAME" git clone https://github.com/InspectorIncognito/visualization.git
+    git clone https://github.com/InspectorIncognito/visualization.git
     cd visualization
-    sudo -u "$LINUX_USER_NAME" git submodule init
-    sudo -u "$LINUX_USER_NAME" git submodule update
+    git submodule init
+    git submodule update
+    chown -R "$LINUX_USER_NAME":"$LINUX_USER_NAME" "$PROJECT_DEST"
   fi
 
 fi
