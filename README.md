@@ -24,7 +24,7 @@ This has been tested on Ubuntu 16.04 machines.
 The installation script requires sudo access.
 
 
-## Account Creation
+## Account Creation     
 
 To create a linux user run the command `adduser <user_name>`. After that you should see the next messages
 
@@ -90,7 +90,7 @@ The installation process requires a database dump from the TranSapp server, with
 ```bash
 ## ON TranSapp app server
 # perform dump
-sudo -u postgres pg_dump <database_name> --table='"AndroidRequests_"*' --table='django_migrations' > dump.sql
+sudo -u postgres pg_dump <database_name> > dump.sql
 # compress 
 $ tar -zcvf dump.sql.tar.gz dump.sql
 # send using the previous generated key
