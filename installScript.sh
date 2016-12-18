@@ -256,7 +256,7 @@ if $project_configuration; then
   # move TranSapp app server migrations to TranSapp visualization server migration folder
   tar -zxvf "$MIGRATION" -C "$PROJECT_DEST"/visualization/AndroidRequests/migrations 
   # fixed migration dependencies
-  sed -i -e "s/CHANGE_ME/'$LAST_MIGRATION'/g" "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
+  sed -i -e "s/CHANGE_ME/"$LAST_MIGRATION"/g" "$PROJECT_DEST"/visualization/AndroidRequests/migrations/0011_auto_20161025_1616.py
 
   # uptade the model of the database
   python "$PROJECT_DEST"/visualization/manage.py migrate
