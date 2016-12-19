@@ -85,9 +85,9 @@ $ sudo apt-get install openssh-server
 Prepare a Database Dump (on TranSapp app server)
 ====================================================
 
-## Database dump file
+## Database dump file, migration files and images
 
-The installation process requires a database dump from the TranSapp server, with the `AndroidRequests` models and `django_migrations` table will be ok and migration files:
+The installation process requires a database dump, migration backup and images (from free reports) backup from the TranSapp app server:
 
 ```bash
 ## ON TranSapp app server
@@ -102,6 +102,12 @@ $ scp -i /root/.ssh/id_rsa  dump.sql.tar.gz <user>@<ip>:<destination_folder>
 tar -zcvf migrations.tar.gz -C <path_to_project>/AndroidRequests/migrations/ .
 # send to TranSapp Visualization server
 scp -i /root/.ssh/id_rsa migrations.tar.gz <user>@<ip>:<destination_folder>
+
+# perform backup and compresion of images files
+tar -zcvf images.tar.gz -C <path_to_project>/media/ .
+# send to TranSapp Visualization server
+scp -i /root/.ssh/id_rsa images.tar.gz <user>@<ip>:<destination_folder>
+
 
 ## ON TranSapp Visualization server
 # uncompress sql dump
