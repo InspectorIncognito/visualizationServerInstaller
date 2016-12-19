@@ -61,7 +61,7 @@ First, you need to generate keys for your root user:
 $ ssh-keygen -t rsa -N "" -f "/root/.ssh/id_rsa"
 ```
 
-Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the visualization server, where `<user>` **relates to the user created while installing.** Note, if `.ssh` folder doesn't exists you can create it with this command `mkdir -m 700 .ssh`.
+Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the visualization server, where `<user>` **relates to the user created while installing.** Note, if `.ssh` folder doesn't exists you can create it with this command `mkdir -m 700 .ssh`. Other option is to use ssh-copy-id command to move public key to visualization server
 
 Then, try to perform a ssh connection to the Visualization server, using the generated private key. Just accept when prompted whether to accept the fingerprint on this first connection.
 ```bash
