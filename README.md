@@ -61,9 +61,11 @@ First, you need to generate keys for your root user:
 $ ssh-keygen -t rsa -N "" -f "/root/.ssh/id_rsa"
 ```
 
-Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the visualization server, where `<user>` **relates to the user created while installing.** Note, if `.ssh` folder doesn't exists you can create it with this command `mkdir -m 700 .ssh`. Other option is to use ssh-copy-id command to move public key to visualization server
-
-Then, try to perform a ssh connection to the Visualization server, using the generated private key. Just accept when prompted whether to accept the fingerprint on this first connection.
+Copy and paste the generated `.pub` key (`/root/.ssh/id_rsa.pub`) for root into the `/home/<user>/.ssh/authorized_keys`on the visualization server, where `<user>` **relates to the user created while installing.**. To move ssh key to TranSapp visualization server you can use `ssh-copy-id` command.
+```bash
+sudo -u root ssh-copy-id -i /root/.ssh/id_rsa <user>@<ip>
+```
+Then, try to perform a ssh connection to the TranSapp visualization server, using the generated private key. Just accept when prompted whether to accept the fingerprint on this first connection.
 ```bash
 sudo -u root ssh -i /root/.ssh/id_rsa <user>@<ip>
 ```
@@ -183,7 +185,15 @@ $ sudo service apache2 restart
 
 ## Create super user
 
-TODO: specify how to access the platform
+To log in on web application on TranSapp visualization server you have to create a super user in django framework. You have to go `<path_to_project>` and run the next command ([createsuperuser](https://docs.djangoproject.com/en/1.10/ref/django-admin/#createsuperuser)).
+```bash
+$ python manage.py createsuperuser
+```
+With this new user you can create others through django admin web page (`<ip>/admin`). In the web app exists three types of users:
+- TranSapp user
+- Authority user
+- Carrier user
+
 
 ====================================================
 The Last bit of work
