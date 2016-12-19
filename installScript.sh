@@ -28,6 +28,10 @@ if [ -z "$6" ]; then
     exit 1
 fi
 if [ -z "$7" ]; then
+    echo "It was not specified tar file of images from free reports"
+    exit 1
+fi
+if [ -z "$8" ]; then
     echo "It was not specified linux user name"
     exit 1
 fi
@@ -38,7 +42,8 @@ POSTGRES_USER=$3
 POSTGRES_PASS=$4
 DUMP=$5
 MIGRATION=$6
-LINUX_USER_NAME=$7
+IMAGES=$7
+LINUX_USER_NAME=$8
 
 #####################################################################
 # SETUP
@@ -248,6 +253,9 @@ if $project_configuration; then
 
   # install all dependencies of python to the project
   echo "--------------------------------------------------------------------------------"
+  
+  # move TranSapp app server images to TranSapp visualization server images folder
+  tar -zxvf "$IMAGES" -C "$PROJECT_DEST"/visualization/media
 
   # detect last migration executed in AndroidRequests app
   QUERY="select name from django_migrations where app='AndroidRequests' ORDER BY applied DESC limit 1;"
