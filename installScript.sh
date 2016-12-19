@@ -345,7 +345,7 @@ if $apache_configuration; then
 
   # this lets apache add new things to the media folder
   # to store the pictures of the free report
-  sudo adduser www-data "$USER_NAME"
+  sudo adduser www-data "$LINUX_USER_NAME"
 
   echo ----
   echo ----
