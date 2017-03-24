@@ -1,6 +1,4 @@
-====================================================
-Overview
-====================================================
+# Overview
 
 This repository mantains the code for deploying the TranSappVisualization server on a linux machine, which means:
 - Step 1: linux user creation
@@ -10,9 +8,9 @@ This repository mantains the code for deploying the TranSappVisualization server
 - Step 5: apache configuration
 
 
-====================================================
-Prerequisites for visualization server
-====================================================
+--- 
+
+# Prerequisites for visualization server
 
 ## Linux Machine with Ubuntu 16.04
 
@@ -47,9 +45,9 @@ Enter the new value, or press ENTER for the default
 Is the information correct? [Y/n] Y
 ```
 
-====================================================
-Passwordless SSH Authentication (on TranSapp app server)
-====================================================
+---
+
+# Passwordless SSH Authentication (on TranSapp app server)
 
 ## Required Keys
 
@@ -81,9 +79,10 @@ Note, you may need to install the `openssh-server` debian package on both machin
 ```bash
 $ sudo apt-get install openssh-server
 ```
-====================================================
-Prepare a Database Dump (on TranSapp app server)
-====================================================
+
+---
+
+# Prepare a Database Dump (on TranSapp app server)
 
 ## Database dump file, migration files and images
 
@@ -117,9 +116,10 @@ tar -zxvf dump.sql.tar.gz
 # OBS: migrations tar file will be uncompress by installation script
 ```
 
-====================================================
-DEPLOYMENT
-====================================================
+---
+
+# DEPLOYMENT
+
 
 ## Clone the the installer
 
@@ -200,10 +200,9 @@ With this new user you can create others through django admin web page (`<ip>/ad
 - Authority user
 - Carrier user
 
+---
 
-====================================================
-The Last bit of work
-====================================================
+# The Last bit of work
 
 You are almost ready on your journey. Just setup the jobs as described on the [AndroidRequestsBackups app](https://github.com/InspectorIncognito/AndroidRequestsBackups) .
 
